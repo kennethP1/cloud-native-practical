@@ -3,8 +3,7 @@ package com.ezgroceries.shoppinglist.controller;
 import com.ezgroceries.shoppinglist.model.ShoppingList;
 import org.springframework.http.ResponseEntity;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.net.URI;
 import java.util.*;
@@ -17,14 +16,12 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RequestMapping(value = "/shopping-lists", produces = "application/json")
 public class ShoppingListController {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // 201
     public ResponseEntity<ShoppingList> createShoppingList(@RequestBody Map<String, String> body) {
         UUID id = UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915");
         ShoppingList shoppingList = new ShoppingList(id, body.get("name"));
-        logger.info("Created shopping list '" + shoppingList.getName() + "' with id '" + shoppingList.getShoppingListId() + "'");
         return entityWithLocation(id).body(new ShoppingList(id, body.get("name")));
     }
 
