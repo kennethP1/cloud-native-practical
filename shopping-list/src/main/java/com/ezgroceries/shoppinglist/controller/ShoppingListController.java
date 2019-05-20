@@ -1,6 +1,7 @@
 package com.ezgroceries.shoppinglist.controller;
 
 import com.ezgroceries.shoppinglist.model.ShoppingList;
+import com.ezgroceries.shoppinglist.services.ShoppingListService;
 import org.springframework.http.ResponseEntity;
 
 
@@ -17,12 +18,19 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 public class ShoppingListController {
 
 
+    private final ShoppingListService shoppingListService;
+
+    public ShoppingListController(ShoppingListService shoppingListService) {
+        this.shoppingListService = shoppingListService;
+    }
+
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // 201
     public ResponseEntity<ShoppingList> createShoppingList(@RequestBody Map<String, String> body) {
-        UUID id = UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915");
-        ShoppingList shoppingList = new ShoppingList(id, body.get("name"));
-        return entityWithLocation(id).body(new ShoppingList(id, body.get("name")));
+        ShoppingList shoppingList = shoppingListService.createShoppingList(body.get("name"));
+        return entityWithLocation(shoppingList.getShoppingListId()).body(shoppingList);
+
     }
 
     private ResponseEntity.BodyBuilder entityWithLocation(Object resourceId) {
@@ -37,28 +45,16 @@ public class ShoppingListController {
         return ResponseEntity.ok(body.subList(0,1));
     }
 
+    @GetMapping(path = "/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<ShoppingList>  getList(@PathVariable String id) {
+        return ResponseEntity.ok(shoppingListService.get(id));
+    }
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ShoppingList>> getList() {
-
-        List<ShoppingList> lists = new ArrayList<>();
-        UUID uuid = UUID.fromString("4ba92a46-1d1b-4e52-8e38-13cd56c7224c");
-        ShoppingList shoppingList = new ShoppingList(uuid, "Stephanie's birthday");
-        Arrays.asList("Tequila",
-                "Triple sec",
-                "Lime juice",
-                "Salt",
-                "Blue Curacao").forEach(shoppingList::addIngredient);
-        lists.add(shoppingList);
-        uuid = UUID.fromString("6c7d09c2-8a25-4d54-a979-25ae779d2465");
-        shoppingList = new ShoppingList(uuid, "Glenn's birhtday");
-        Arrays.asList("Tequila",
-                "Triple sec",
-                "Lime juice",
-                "Salt",
-                "Blue Curacao").forEach(shoppingList::addIngredient);
-        lists.add(shoppingList);
-        return ResponseEntity.ok(lists);
+    public ResponseEntity<List<ShoppingList>> getAllShoppingLists() {
+        return ResponseEntity.ok(shoppingListService.getAllShoppingLists());
     }
 
 }
