@@ -3,15 +3,31 @@ package com.ezgroceries.shoppinglist.controller;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.ezgroceries.shoppinglist.services.ShoppingListService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.ezgroceries.shoppinglist.model.ShoppingList;
+import com.ezgroceries.shoppinglist.services.ShoppingListService;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.UUID;
+
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -22,8 +38,15 @@ public class ShoppingListControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+
+    @MockBean
+    private ShoppingListService shoppingListService;
+
+
+
     @Test
     public void createShoppingList() throws Exception {
+        given(shoppingListService.createShoppingList("Stephanie's birthday")).willReturn(getShoppingListMock());
         mockMvc
                 .perform(
                         post("/shopping-lists")
@@ -35,7 +58,13 @@ public class ShoppingListControllerTest {
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("shoppingListId").value("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"))
                 .andExpect(jsonPath("name").value("Stephanie's birthday"));
+        verify(shoppingListService).createShoppingList("Stephanie's birthday");
     }
+
+    private ShoppingList getShoppingListMock() {
+        return new ShoppingList(UUID.fromString("eb18bb7c-61f3-4c9f-981c-55b1b8ee8915"), "Stephanie's birthday");
+    }
+
 
     @Test
     public void addCocktailsToList() throws Exception {
@@ -55,6 +84,7 @@ public class ShoppingListControllerTest {
 
     @Test
     public void getShoppingLists() throws Exception {
+        given(shoppingListService.getAllShoppingLists()).willReturn(getShoppingListsMock());
         mockMvc
                 .perform(
                         get("/shopping-lists")
@@ -79,5 +109,25 @@ public class ShoppingListControllerTest {
                 .andExpect(jsonPath("$[1].ingredients[2]").value("Lime juice"))
                 .andExpect(jsonPath("$[1].ingredients[3]").value("Salt"))
                 .andExpect(jsonPath("$[1].ingredients[4]").value("Blue Curacao"));
+        verify(shoppingListService).getAllShoppingLists();
+    }
+
+    private List<ShoppingList> getShoppingListsMock() {
+        List<ShoppingList> lists = new ArrayList<>();
+        ShoppingList shoppingList = new ShoppingList(UUID.fromString("4ba92a46-1d1b-4e52-8e38-13cd56c7224c"), "Stephanie's birthday");
+        Arrays.asList("Tequila",
+                "Triple sec",
+                "Lime juice",
+                "Salt",
+                "Blue Curacao").forEach(shoppingList::addIngredient);
+        lists.add(shoppingList);
+        shoppingList = new ShoppingList(UUID.fromString("6c7d09c2-8a25-4d54-a979-25ae779d2465"), "My birthday");
+        Arrays.asList("Tequila",
+                "Triple sec",
+                "Lime juice",
+                "Salt",
+                "Blue Curacao").forEach(shoppingList::addIngredient);
+        lists.add(shoppingList);
+        return lists;
     }
 }

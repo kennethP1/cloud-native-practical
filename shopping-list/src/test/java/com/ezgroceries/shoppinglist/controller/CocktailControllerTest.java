@@ -8,7 +8,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.ezgroceries.shoppinglist.database.CocktailDBClient;
-import com.ezgroceries.shoppinglist.database.CocktailDBResponse;
+import com.ezgroceries.shoppinglist.services.CocktailService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +20,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
+
 import java.util.List;
+import java.util.Arrays;
+import java.util.UUID;
+import com.ezgroceries.shoppinglist.model.CocktailResource;
+
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
@@ -32,13 +36,13 @@ public class CocktailControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private CocktailDBClient cocktailDBClient;
+    private CocktailService cocktailService;
 
 
     @Test
     public void getAccountsTest() throws Exception {
 
-        given(cocktailDBClient.searchCocktails("TEST")).willReturn(giveMockedCocktails());
+        given(cocktailService.searchCocktails("TEST")).willReturn(giveCocktails());
 
         mockMvc
                 .perform(get("/cocktails")
@@ -64,37 +68,23 @@ public class CocktailControllerTest {
                 .andExpect(jsonPath("$[1].ingredients[2]").value("Lime juice"))
                 .andExpect(jsonPath("$[1].ingredients[3]").value("Salt"));
 
-        verify(cocktailDBClient).searchCocktails("TEST");
+        verify(cocktailService).searchCocktails("TEST");
 
 
     }
 
 
-    private CocktailDBResponse giveMockedCocktails() {
-        List<CocktailDBResponse.DrinkResource> drinks = new ArrayList<>();
-        CocktailDBResponse.DrinkResource drinkResource = new CocktailDBResponse.DrinkResource();
-        drinkResource.setStrDrink("Margerita");
-        drinkResource.setStrGlass("Cocktail glass");
-        drinkResource.setStrInstructions("Rub the rim of the glass with the lime slice to make the salt stick to it. Take care to moisten..");
-        drinkResource.setStrDrinkThumb("https://www.thecocktaildb.com/images/media/drink/wpxpvu1439905379.jpg");
-        drinkResource.setStrIngredient1("Tequila");
-        drinkResource.setStrIngredient2("Triple sec");
-        drinkResource.setStrIngredient3("Lime juice");
-        drinkResource.setStrIngredient4("Salt");
-        drinks.add(drinkResource);
-        drinkResource = new CocktailDBResponse.DrinkResource();
-        drinkResource.setStrDrink("Blue Margerita");
-        drinkResource.setStrGlass("Cocktail glass");
-        drinkResource.setStrInstructions("Rub rim of cocktail glass with lime juice. Dip rim in coarse salt..");
-        drinkResource.setStrDrinkThumb("https://www.thecocktaildb.com/images/media/drink/qtvvyq1439905913.jpg");
-        drinkResource.setStrIngredient1("Tequila");
-        drinkResource.setStrIngredient2("Blue Curacao");
-        drinkResource.setStrIngredient3("Lime juice");
-        drinkResource.setStrIngredient4("Salt");
-        drinks.add(drinkResource);
-        CocktailDBResponse cocktailDBResponse = new CocktailDBResponse();
-        cocktailDBResponse.setDrinks(drinks);
-        return cocktailDBResponse;
+    private List<CocktailResource> giveCocktails() {
+               return Arrays.asList(
+                new CocktailResource(UUID.randomUUID(), "Margerita", "Cocktail glass", "",
+                        "https://www.thecocktaildb.com/images/media/drink/wpxpvu1439905379.jpg", Arrays.asList(
+                        "Tequila", "Triple sec", "Lime juice", "Salt"
+                )),
+                new CocktailResource(UUID.randomUUID(), "Blue Margerita", "Cocktail glass", "",
+                        "https://www.thecocktaildb.com/images/media/drink/qtvvyq1439905913.jpg", Arrays.asList(
+                        "Tequila", "Blue Curacao", "Lime juice", "Salt"
+                )));
+
     }
 
 
