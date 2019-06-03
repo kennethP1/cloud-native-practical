@@ -41,20 +41,20 @@ public class ShoppingListController {
 
     @PostMapping(path = "/{id}/cocktails")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<Map<String, String>>> addCocktails(@PathVariable String id, @RequestBody List<Map<String, String>> body) {
-        return ResponseEntity.ok(body.subList(0,1));
+    public List<Map<String, String>> addCocktails(@PathVariable String id, @RequestBody List<Map<String, String>> body) {
+        return (body.subList(0,1));
     }
 
     @GetMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<ShoppingList>  getList(@PathVariable String id) {
-        return ResponseEntity.ok(shoppingListService.get(id));
+    public ShoppingList  getList(@PathVariable String id) {
+        return (shoppingListService.get(id));
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<ShoppingList>> getAllShoppingLists() {
-        return ResponseEntity.ok(shoppingListService.getAllShoppingLists());
+    public List<ShoppingList> getAllShoppingLists() {
+        return (shoppingListService.getAllShoppingLists());
     }
 
 }

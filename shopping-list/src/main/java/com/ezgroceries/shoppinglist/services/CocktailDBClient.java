@@ -1,14 +1,12 @@
-package com.ezgroceries.shoppinglist.database;
+package com.ezgroceries.shoppinglist.services;
 
 import com.ezgroceries.shoppinglist.entities.CocktailEntity;
-import com.ezgroceries.shoppinglist.model.CocktailResource;
 import com.ezgroceries.shoppinglist.repositories.CocktailRepository;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

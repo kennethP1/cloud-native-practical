@@ -1,4 +1,4 @@
-package com.ezgroceries.shoppinglist.database;
+package com.ezgroceries.shoppinglist.services;
 
 import java.util.List;
 

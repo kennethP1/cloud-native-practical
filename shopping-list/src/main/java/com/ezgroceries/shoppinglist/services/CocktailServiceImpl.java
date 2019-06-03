@@ -1,8 +1,6 @@
 package com.ezgroceries.shoppinglist.services;
 
-import com.ezgroceries.shoppinglist.database.CocktailDBClient;
-import com.ezgroceries.shoppinglist.database.CocktailDBResponse;
-import com.ezgroceries.shoppinglist.database.CocktailDBResponse.DrinkResource;
+import com.ezgroceries.shoppinglist.services.CocktailDBResponse.DrinkResource;
 import com.ezgroceries.shoppinglist.entities.CocktailEntity;
 import com.ezgroceries.shoppinglist.model.CocktailResource;
 import com.ezgroceries.shoppinglist.repositories.CocktailRepository;
