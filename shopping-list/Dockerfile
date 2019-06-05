@@ -9,4 +9,4 @@ FROM openjdk:8u181-jre
 COPY --from=build_the_code /tmp/target/*.jar app.jar
 EXPOSE 8080
 EXPOSE 8443
-ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=hsqldb", "-jar","/app.jar"]
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-jar","/app.jar"]
